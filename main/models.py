@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
@@ -136,6 +137,22 @@ class Blog(models.Model):
 
     def get_absolute_url(self):
         return f"/blog/{self.slug}"
+
+
+class Rating(models.Model):
+    class Meta:
+        unique_together = (('user', 'blog'),)
+        index_together = (('user', 'blog'),)
+        verbose_name = "Rating"
+        verbose_name_plural = "Ratings"
+        
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+    def __str__(self):
+        return self.stars
+
 
 
 class Certificate(models.Model):
