@@ -154,7 +154,6 @@ class Rating(models.Model):
         return self.stars
 
 
-
 class Certificate(models.Model):
     class Meta:
         verbose_name_plural = 'Certificates'

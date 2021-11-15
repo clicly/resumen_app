@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (UserProfile, ContactProfile, Testimonial, Media, Portfolio, Blog, Certificate, Skill, )
+from .models import (UserProfile, ContactProfile, Testimonial, Media, Portfolio, Blog, Certificate, Skill, Rating, )
 
 
 # Register your models here.
@@ -20,7 +20,11 @@ class TestimonialAdmin(admin.ModelAdmin):
 
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'name')\
+
+@admin.register(Rating)
+class RaitngAdmin(admin.ModelAdmin):
+    list_display = ('stars', )
 
 
 @admin.register(Portfolio)
