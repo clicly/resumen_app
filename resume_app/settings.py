@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     # Third-party apps
     'main',
     'ckeditor',
+    'rest_framework',
+    'api',
+
 ]
 
 MIDDLEWARE = [
