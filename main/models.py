@@ -51,6 +51,8 @@ class ContactProfile(models.Model):
 
 
 class Testimonial(models.Model):
+    objects = None
+
     class Meta:
         verbose_name_plural = 'Testimonials'
         verbose_name = 'Testimonial'
