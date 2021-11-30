@@ -1,4 +1,7 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
+
 from .models import Skill, UserProfile, ContactProfile, Testimonial, Media, Portfolio, Blog, Rating, \
     Certificate
 
@@ -42,16 +45,30 @@ class PortfolioSerializer(serializers.ModelSerializer):
 class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
-        fields = ('timestamp', 'author', 'name', 'description', 'body', 'slug', 'image', 'is_active',)
+        fields = ('timestamp', 'author', 'name', 'description', 'body', 'slug', 'image', 'is_active', 'no_of_ratings',
+                  'avg_rating', )
 
 
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
-        fields = ('blog', 'user', 'stars', )
+        # fields = '__all__'
+        fields = ('id', 'stars', 'user', 'blog',)
 
 
 class CertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
-        fields = ('date', 'name', 'title', 'description', 'is_active', )
+        fields = ('date', 'name', 'title', 'description', 'is_active',)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password')
+        extra_kwargs = {'password': {'write_only': True, 'required':True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        Token.objects.create(user=user)
+        return user

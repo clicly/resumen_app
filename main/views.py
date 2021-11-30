@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib import messages
+from rest_framework.authentication import TokenAuthentication
+
 from .models import (Skill, UserProfile, Blog, Portfolio, Testimonial, Certificate, ContactProfile, Media, Rating)
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -10,7 +12,7 @@ from django.views import generic
 from .forms import ContactForm
 
 from .serializers import SkillSerializer, UserProfileSerializer, ContactProfileSerializer, TestimonialSerializer, \
-    MediaSerializer, PortfolioSerializer, BlogSerializer, RatingSerializer, CertificateSerializer
+    MediaSerializer, PortfolioSerializer, BlogSerializer, RatingSerializer, CertificateSerializer, UserSerializer
 # Create your views here.
 from rest_framework import viewsets, status
 
@@ -44,18 +46,23 @@ class PortfolioViewSet(viewsets.ModelViewSet):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
 
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class =  UserSerializer
 
 class BlogViewSet(viewsets.ModelViewSet):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
+    authentication_classes = (TokenAuthentication,)
 
     @action(detail=True, methods=['POST'])
-    def rate_blogs(self, request, pk=None):
+    def rate_blog(self, request, pk=None):
         if 'stars' in request.data:
             blog = Blog.objects.get(id=pk)
             stars = request.data['stars']
-            # user = request.user
-            user = User.objects.get(id=request.user.id)
+            user = request.user
+            # user = User.objects.get(id=request.user.id)
+            print('user', user)
 
             try:
                 rating = Rating.objects.get(user=user.id, blog=blog.id)
@@ -67,7 +74,7 @@ class BlogViewSet(viewsets.ModelViewSet):
             except:
                 rating = Rating.objects.create(user=user.id, blog=blog, stars=stars)
                 serializer = RatingSerializer(rating, many=False)
-                response = {'message': 'Rating updated', 'result': serializer.data}
+                response = {'message': 'Rating created', 'result': serializer.data}
                 return Response(response, status=status.HTTP_200_OK)
 
 
@@ -79,6 +86,7 @@ class BlogViewSet(viewsets.ModelViewSet):
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+    authentication_classes = (TokenAuthentication,)
 
 
 class CertificateViewSet(viewsets.ModelViewSet):

@@ -5,9 +5,10 @@ from rest_framework import routers
 
 from .models import UserProfile
 from .views import SkillViewSet, UserProfileViewSet, ContactProfileViewSet, TestimonialViewSet, MediaViewSet, \
-    PortfolioViewSet, BlogViewSet, RatingViewSet, CertificateViewSet
+    PortfolioViewSet, BlogViewSet, RatingViewSet, CertificateViewSet, UserViewSet
 
 router = routers.DefaultRouter()
+router.register('users', UserViewSet)
 router.register('skills', SkillViewSet)
 router.register('userprofiles', UserProfileViewSet)
 router.register('contactprofiles', ContactProfileViewSet)

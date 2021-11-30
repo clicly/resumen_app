@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'main',
     'ckeditor',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [

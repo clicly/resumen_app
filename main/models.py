@@ -140,20 +140,29 @@ class Blog(models.Model):
     def get_absolute_url(self):
         return f"/blog/{self.slug}"
 
+    def no_of_ratings(self):
+        ratings = Rating.objects.filter(blog=self)
+        return len(ratings)
+
+    def avg_rating(self):
+        sum = 0
+        ratings = Rating.objects.filter(blog=self)
+        for rating in ratings:
+            sum += rating.stars
+        if len(ratings) > 0:
+            return sum / len(ratings)
+        else:
+            return 0
+
 
 class Rating(models.Model):
     class Meta:
         unique_together = (('user', 'blog'),)
         index_together = (('user', 'blog'),)
-        verbose_name = "Rating"
-        verbose_name_plural = "Ratings"
-        
+
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-
-    def __str__(self):
-        return self.stars
 
 
 class Certificate(models.Model):
