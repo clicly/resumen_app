@@ -2,58 +2,71 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib import messages
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import (Skill, UserProfile, Blog, Portfolio, Testimonial, Certificate, ContactProfile, Media, Rating)
 from rest_framework.response import Response
 from rest_framework.decorators import action
-
+from rest_framework import viewsets, status
 from django.views import generic
-
 from .forms import ContactForm
-
 from .serializers import SkillSerializer, UserProfileSerializer, ContactProfileSerializer, TestimonialSerializer, \
     MediaSerializer, PortfolioSerializer, BlogSerializer, RatingSerializer, CertificateSerializer, UserSerializer
 # Create your views here.
-from rest_framework import viewsets, status
 
 
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 
 class ContactProfileViewSet(viewsets.ModelViewSet):
     queryset = ContactProfile.objects.all()
     serializer_class = ContactProfileSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (AllowAny,)
 
 
 class TestimonialViewSet(viewsets.ModelViewSet):
     queryset = Testimonial.objects.all()
     serializer_class = TestimonialSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 
 class MediaViewSet(viewsets.ModelViewSet):
     queryset = Media.objects.all()
     serializer_class = MediaSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 
 class PortfolioViewSet(viewsets.ModelViewSet):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class =  UserSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 class BlogViewSet(viewsets.ModelViewSet):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
-    # authentication_classes = (TokenAuthentication,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (AllowAny,)
 
     @action(detail=True, methods=['POST'])
     def rate_blog(self, request, pk=None):
@@ -88,11 +101,22 @@ class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
     authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def update(self, request, *args, **kwargs):
+        response = {'message': 'You cant update rating like that'}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, *args, **kwargs):
+        response = {'message': 'You cant create rating like that'}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CertificateViewSet(viewsets.ModelViewSet):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
 
 class IndexView(generic.TemplateView):
