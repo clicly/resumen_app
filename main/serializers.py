@@ -45,7 +45,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
 class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
-        fields = ('timestamp', 'author', 'name', 'description', 'body', 'slug', 'image', 'is_active', 'no_of_ratings',
+        fields = ('id', 'timestamp', 'author', 'name', 'description', 'body', 'slug', 'image', 'is_active', 'no_of_ratings',
                   'avg_rating', )
 
 

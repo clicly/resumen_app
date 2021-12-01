@@ -53,19 +53,20 @@ class UserViewSet(viewsets.ModelViewSet):
 class BlogViewSet(viewsets.ModelViewSet):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
-    authentication_classes = (TokenAuthentication,)
+    # authentication_classes = (TokenAuthentication,)
 
     @action(detail=True, methods=['POST'])
     def rate_blog(self, request, pk=None):
+        print(request.data, request.user)
         if 'stars' in request.data:
             blog = Blog.objects.get(id=pk)
             stars = request.data['stars']
-            user = request.user
-            # user = User.objects.get(id=request.user.id)
+            # user = request.user
+            user = User.objects.get(id=request.user.id)
             print('user', user)
 
             try:
-                rating = Rating.objects.get(user=user.id, blog=blog.id)
+                rating = Rating.objects.get(user=request.user.id, blog=request.blog.id)
                 rating.stars = stars
                 rating.save()
                 serializer = RatingSerializer(rating, many=False)
